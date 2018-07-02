@@ -36,9 +36,10 @@ namespace Vidly.Controllers
         }
 
         [HttpPost]
+        [ValidateAntiForgeryToken]
         public ActionResult Save(Customer customer)
         {
-            if (!ModelState.IsValid)
+            if (!ModelState.IsValid) //if form doesn't validate
             {
                 var viewModel = new CustomerFormViewModel
                 {

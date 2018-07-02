@@ -1,30 +1,49 @@
-﻿@model Vidly.ViewModels.MovieFormViewModel
+﻿@using Microsoft.Ajax.Utilities
+@using Vidly.Models
+@model Vidly.ViewModels.MovieFormViewModel
 @{
     ViewBag.Title = "MovieForm";
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
+@if (Model.Movie.Id != 0)
+{
+    <h2>Edit Movie</h2>
+}
+else
+{
+    <h2>New Movie</h2>
+}
 
-<h2>New Movie</h2>
 
 @using (Html.BeginForm("Save", "Movies"))
 {
+    @Html.ValidationSummary(false, "", new { @class = "text-danger" })
     <div class="form-group">
         @Html.LabelFor(m => m.Movie.Name)
         @Html.TextBoxFor(m => m.Movie.Name, new { @class = "form-control" })
-    </div>
-    <div class="form-group">
-        @Html.LabelFor(m => m.Movie.ReleaseDate)
-        @Html.TextBoxFor(m => m.Movie.ReleaseDate, "{0:MM/dd/yyyy}", new { @class = "form-control" })
+        @Html.ValidationMessageFor(m => m.Movie.Name, null, new { @class = "text-danger" })
     </div>
     <div class="form-group">
         @Html.LabelFor(m => m.Movie.MovieGenreId)
         @Html.DropDownListFor(m => m.Movie.MovieGenreId, new SelectList(Model.MovieGenres, "Id", "Name"), "Select genre...", new { @class = "form-control" })
+        @Html.ValidationMessageFor(m => m.Movie.MovieGenreId, null, new { @class = "text-danger" })
+    </div>
+    <div class="form-group">
+        @Html.LabelFor(m => m.Movie.ReleaseDate)
+        @Html.TextBoxFor(m => m.Movie.ReleaseDate, "{0:MM/dd/yyyy}", new { @class = "form-control" })
+        @Html.ValidationMessageFor(m => m.Movie.ReleaseDate, null, new { @class = "text-danger" })
     </div>
     <div class="form-group">
         @Html.LabelFor(m => m.Movie.Stock)
         @Html.TextBoxFor(m => m.Movie.Stock, new { @class = "form-control" })
+        @Html.ValidationMessageFor(m => m.Movie.Stock, null, new { @class = "text-danger" })
     </div>
     @Html.HiddenFor(m => m.Movie.Id)
+    @Html.AntiForgeryToken()
     <button type="submit" class="btn btn-primary">Save</button>
 }
 
+@section scripts
+{
+    @Scripts.Render("~/bundles/jqueryval")
+}
