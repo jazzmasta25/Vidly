@@ -26,9 +26,9 @@ namespace Vidly.Controllers.Api
         }
 
         //GET /api/customers/1
-        public IHttpActionResult GetCustomer(int Id)
+        public IHttpActionResult GetCustomer(int id)
         {
-            var customer = _context.Customers.Single(c => c.Id == Id);
+            var customer = _context.Customers.Single(c => c.Id == id);
 
             if (customer == null)
                 return NotFound();
@@ -54,12 +54,12 @@ namespace Vidly.Controllers.Api
 
         //PUT /api/customers/1
         [HttpPut]
-        public IHttpActionResult Updatecustomer(int Id, CustomerDto customerDto)
+        public IHttpActionResult UpdateCustomer(int id, CustomerDto customerDto)
         {
             if (!ModelState.IsValid)
                 return BadRequest();
 
-            var customerInDb = _context.Customers.SingleOrDefault(c => c.Id == Id);
+            var customerInDb = _context.Customers.SingleOrDefault(c => c.Id == id);
 
             if (customerInDb == null)
                 return NotFound();
@@ -73,9 +73,9 @@ namespace Vidly.Controllers.Api
 
         //DELETE /api/customers/1
         [HttpDelete]
-        public IHttpActionResult DeleteCustomer(int Id)
+        public IHttpActionResult DeleteCustomer(int id)
         {
-            var customerInDb = _context.Customers.SingleOrDefault(c => c.Id == Id);
+            var customerInDb = _context.Customers.SingleOrDefault(c => c.Id == id);
 
             if (customerInDb == null)
                 return NotFound();
