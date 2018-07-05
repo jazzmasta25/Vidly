@@ -1,17 +1,15 @@
-﻿@model Vidly.ViewModels.CustomerFormViewModel
+﻿@using Vidly.Models
+@model Vidly.ViewModels.CustomerFormViewModel
 @{
     ViewBag.Title = "New";
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
-@if (Model.Customer.Id != 0)
-{
-    <h2>Edit Customer</h2>
+@{
+    var actionLabel = Model.Customer.Id != 0 ? "Edit" : "Create";
 }
-else
-{
-    <h2>New Customer</h2>
-}
+
+<h2>@actionLabel Customer</h2>
 
 @using (Html.BeginForm("Save", "Customers"))
 {
@@ -37,7 +35,7 @@ else
     </div>
     @Html.HiddenFor(c => c.Customer.Id)
     @Html.AntiForgeryToken()
-    <button type="submit" class="btn btn-primary">Create Customer</button>
+    <button type="submit" class="btn btn-primary">@actionLabel Customer</button>
 
 }
 

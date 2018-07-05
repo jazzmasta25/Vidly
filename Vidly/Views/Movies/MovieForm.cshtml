@@ -5,42 +5,40 @@
     ViewBag.Title = "MovieForm";
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
-@if (Model.Id != 0)
-{
-    <h2>Edit Movie</h2>
+
+@{
+    var actionLabel = Model.Movies.Id != 0 ? "Edit" : "Create";
 }
-else
-{
-    <h2>New Movie</h2>
-}
+
+<h2>@actionLabel Movie</h2>
 
 
 @using (Html.BeginForm("Save", "Movies"))
 {
     @Html.ValidationSummary(false, "", new { @class = "text-danger" })
     <div class="form-group">
-        @Html.LabelFor(m => m.Name)
-        @Html.TextBoxFor(m => m.Name, new { @class = "form-control" })
-        @Html.ValidationMessageFor(m => m.Name, null, new { @class = "text-danger" })
+        @Html.LabelFor(m => m.Movies.Name)
+        @Html.TextBoxFor(m => m.Movies.Name, new { @class = "form-control" })
+        @Html.ValidationMessageFor(m => m.Movies.Name, null, new { @class = "text-danger" })
     </div>
     <div class="form-group">
-        @Html.LabelFor(m => m.MovieGenreId)
-        @Html.DropDownListFor(m => m.MovieGenreId, new SelectList(Model.MovieGenres, "Id", "Name"), "Select genre...", new { @class = "form-control" })
-        @Html.ValidationMessageFor(m => m.MovieGenreId, null, new { @class = "text-danger" })
+        @Html.LabelFor(m => m.Movies.MovieGenreId)
+        @Html.DropDownListFor(m => m.Movies.MovieGenreId, new SelectList(Model.MovieGenres, "Id", "Name"), "Select genre...", new { @class = "form-control" })
+        @Html.ValidationMessageFor(m => m.Movies.MovieGenreId, null, new { @class = "text-danger" })
     </div>
     <div class="form-group">
-        @Html.LabelFor(m => m.ReleaseDate)
-        @Html.TextBoxFor(m => m.ReleaseDate, "{0:MM/dd/yyyy}", new { @class = "form-control" })
-        @Html.ValidationMessageFor(m => m.ReleaseDate, null, new { @class = "text-danger" })
+        @Html.LabelFor(m => m.Movies.ReleaseDate)
+        @Html.TextBoxFor(m => m.Movies.ReleaseDate, "{0:MM/dd/yyyy}", new { @class = "form-control", @Value = (Model.Movies.Id == 0 ? "" : Model.Movies.ReleaseDate.ToString("MM/dd/yyyy")) })
+        @Html.ValidationMessageFor(m => m.Movies.ReleaseDate, null, new { @class = "text-danger" })
     </div>
     <div class="form-group">
-        @Html.LabelFor(m => m.Stock)
-        @Html.TextBoxFor(m => m.Stock, new { @class = "form-control" })
-        @Html.ValidationMessageFor(m => m.Stock, null, new { @class = "text-danger" })
+        @Html.LabelFor(m => m.Movies.Stock)
+        @Html.TextBoxFor(m => m.Movies.Stock, new { @class = "form-control", @Value = (Model.Movies.Id == 0 ? "" : Model.Movies.Stock.ToString()) })
+        @Html.ValidationMessageFor(m => m.Movies.Stock, null, new { @class = "text-danger" })
     </div>
-    @Html.HiddenFor(m => m.Id)
+    @Html.HiddenFor(m => m.Movies.Id)
     @Html.AntiForgeryToken()
-    <button type="submit" class="btn btn-primary">Save</button>
+    <button type="submit" class="btn btn-primary">@actionLabel Movie</button>
 }
 
 @section scripts

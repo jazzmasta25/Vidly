@@ -1,4 +1,6 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.Data.Entity;
 using System.Linq;
 using System.Web.Mvc;
@@ -20,6 +22,37 @@ namespace Vidly.Controllers
         protected override void Dispose(bool disposing) //dispose database
         {
             _context.Dispose();
+        }
+
+        public bool AgeVerify(Customer customer)
+        {
+            if (customer.MembershipTypeId == MembershipType.Unknown ||
+                customer.MembershipTypeId == MembershipType.PayAsYouGo)
+                return true;
+
+            if (customer.Birthdate == null)
+                return false;
+
+            var age = DateTime.Today.Year - customer.Birthdate.Value.Year;
+
+            return age >= Customer.MinAgeToSubscribe;
+        }
+
+        public ActionResult Index()
+        {
+            var customers = _context.Customers.Include(c => c.MembershipType).ToList();
+
+            return View(customers);
+        }
+
+        public ActionResult Details(int id)
+        {
+            var customer = _context.Customers.Include(c => c.MembershipType).SingleOrDefault(c => c.Id == id); ;
+
+            if (customer == null)
+                return HttpNotFound();
+
+            return View(customer);
         }
 
 
@@ -66,36 +99,23 @@ namespace Vidly.Controllers
             return RedirectToAction("Index", "Customers");
         }
 
-        public ActionResult Index()
-        {
-            var customers = _context.Customers.Include(c => c.MembershipType).ToList();
-             
-            return View(customers);
-        }
-
-        public ActionResult Details(int id)
-        {
-            var customer = _context.Customers.Include(c => c.MembershipType).SingleOrDefault(c => c.Id == id); ;
-
-            if (customer == null)
-                return HttpNotFound();
-
-            return View(customer);
-        }
-
-
         public ActionResult Edit(int id)
         {
             var customer = _context.Customers.SingleOrDefault(c => c.Id == id);
+            var viewModel = new CustomerFormViewModel();
 
             if (customer == null)
                 return HttpNotFound();
 
-            var viewModel = new CustomerFormViewModel
+            if (!ModelState.IsValid) //if form doesn't validate
             {
-                Customer = customer,
-                MembershipTypes = _context.MembershipTypes.ToList()
-            };
+                viewModel.Customer = customer;
+                viewModel.MembershipTypes = _context.MembershipTypes.ToList();
+                return View("CustomerForm", viewModel);
+            }
+
+            viewModel.Customer = customer;
+            viewModel.MembershipTypes = _context.MembershipTypes.ToList();
 
             return View("CustomerForm", viewModel);
 

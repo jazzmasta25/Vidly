@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
 using System.Web;
 
@@ -12,8 +13,6 @@ namespace Vidly.Models
 
         [Required]
         public string Name { get; set; }
-
-        public MovieGenre MovieGenre { get; set; }
 
         [Required]
         [Range(1, 20)]
@@ -28,7 +27,10 @@ namespace Vidly.Models
 
         [Required]
         [Display(Name = "Genre")]
-        public byte MovieGenreId { get; set; } //MUST BE TYPE BYTE ! ! !! !
+        [ForeignKey("MovieGenre")]
+        public int MovieGenreId { get; set; } //Set foreign key option
+
+        public MovieGenre MovieGenre { get; set; }
     }
 
     //movies/random

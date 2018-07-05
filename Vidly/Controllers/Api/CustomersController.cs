@@ -19,13 +19,29 @@ namespace Vidly.Controllers.Api
             _context = new ApplicationDbContext();
         }
 
+        private static bool AgeVerify(CustomerDto customer)
+        {
+            if (customer.MembershipTypeId == MembershipType.Unknown ||
+                customer.MembershipTypeId == MembershipType.PayAsYouGo)
+                return true;
+
+            if (customer.Birthdate == null)
+                return false;
+
+            var age = DateTime.Today.Year - customer.Birthdate.Value.Year;
+
+            return age >= Customer.MinAgeToSubscribe;
+        }
+
         //GET /api/customers/
+        [HttpGet]
         public IHttpActionResult GetCustomers()
         {
             return Ok(_context.Customers.ToList().Select(Mapper.Map<Customer, CustomerDto>));
         }
 
         //GET /api/customers/1
+        [HttpGet]
         public IHttpActionResult GetCustomer(int id)
         {
             var customer = _context.Customers.Single(c => c.Id == id);
@@ -40,10 +56,16 @@ namespace Vidly.Controllers.Api
         [HttpPost]
         public IHttpActionResult CreateCustomer(CustomerDto customerDto)
         {
-            if (!ModelState.IsValid)
-                return BadRequest();
 
             var customer = Mapper.Map<CustomerDto, Customer>(customerDto);
+            var ageCheck = AgeVerify(customerDto);
+
+            if (!ageCheck)
+                return BadRequest("Customer should be at least 18 years old to subscribe to a membership. Or birthdate is required.");
+
+            if (!ModelState.IsValid)
+                return BadRequest();
+            
             _context.Customers.Add(customer);
             _context.SaveChanges();
 
@@ -56,10 +78,17 @@ namespace Vidly.Controllers.Api
         [HttpPut]
         public IHttpActionResult UpdateCustomer(int id, CustomerDto customerDto)
         {
-            if (!ModelState.IsValid)
-                return BadRequest();
-
             var customerInDb = _context.Customers.SingleOrDefault(c => c.Id == id);
+
+            var ageCheck = AgeVerify(customerDto);
+
+            if (!ageCheck)
+                return BadRequest("Customer should be at least 18 years old to subscribe to a membership. Or birthdate is required.");
+
+            if (!ModelState.IsValid)
+                return BadRequest(ModelState);
+
+
 
             if (customerInDb == null)
                 return NotFound();

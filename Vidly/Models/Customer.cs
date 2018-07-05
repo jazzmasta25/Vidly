@@ -25,9 +25,11 @@ namespace Vidly.Models
         
         [Display(Name = "Membership Type")]
         [ForeignKey("MembershipType")]
-        public int MembershipTypeId {get; set; }  //MUST BE TYPE BYTE ! ! !! !
+        public int MembershipTypeId {get; set; } //Set foreign key option
+
         public MembershipType MembershipType { get; set; }
 
+        public static readonly int MinAgeToSubscribe = 18;
 
     }
 }

@@ -247,6 +247,14 @@
     <Compile Include="Migrations\201807031158227_ChangeMembershipTypeIdToInt.Designer.cs">
       <DependentUpon>201807031158227_ChangeMembershipTypeIdToInt.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\201807041717539_MinAge.cs" />
+    <Compile Include="Migrations\201807041717539_MinAge.Designer.cs">
+      <DependentUpon>201807041717539_MinAge.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201807041922354_MoviesChanges.cs" />
+    <Compile Include="Migrations\201807041922354_MoviesChanges.Designer.cs">
+      <DependentUpon>201807041922354_MoviesChanges.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Models\AccountViewModels.cs" />
     <Compile Include="Models\Customer.cs" />
@@ -394,6 +402,12 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\201807031158227_ChangeMembershipTypeIdToInt.resx">
       <DependentUpon>201807031158227_ChangeMembershipTypeIdToInt.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201807041717539_MinAge.resx">
+      <DependentUpon>201807041717539_MinAge.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201807041922354_MoviesChanges.resx">
+      <DependentUpon>201807041922354_MoviesChanges.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>

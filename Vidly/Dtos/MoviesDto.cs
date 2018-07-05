@@ -24,6 +24,6 @@ namespace Vidly.Dtos
         public DateTime DateAdded { get; set; }
 
         [Required]
-        public byte MovieGenreId { get; set; } //MUST BE TYPE BYTE ! ! !! !
+        public int MovieGenreId { get; set; }
     }
 }

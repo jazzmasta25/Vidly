@@ -20,12 +20,14 @@ namespace Vidly.Controllers.Api
         }
 
         //GET /api/movies
+        [HttpGet]
         public IHttpActionResult GetMovies()
         {
             return Ok(_context.Movies.ToList().Select(Mapper.Map<Movies, MoviesDto>));
         }
 
         //GET /api/movies/1
+        [HttpGet]
         public IHttpActionResult GetMovie(int id)
         {
             var movie = _context.Movies.SingleOrDefault(m => m.Id == id);
@@ -69,7 +71,7 @@ namespace Vidly.Controllers.Api
 
             _context.SaveChanges();
 
-            return Ok();
+            return Ok(movieDto);
         }
 
         //DELETE /api/movies/1

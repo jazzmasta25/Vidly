@@ -11,7 +11,6 @@ namespace Vidly.Controllers
 {
     public class MoviesController : Controller
     {
-
         private ApplicationDbContext _context; //database
 
         public MoviesController() //constructor initialize database so we can use it
@@ -35,21 +34,6 @@ namespace Vidly.Controllers
             //return HttpNotFound();
             //return new EmptyResult();
             //return RedirectToAction("Index", "Home", new {page = 1, sortBy = "name"});
-        }
-
-        public ActionResult Edit(int id)
-        {
-            var movie = _context.Movies.SingleOrDefault(m => m.Id == id); //get movie by id, or null
-
-            if (movie == null) //if null 404
-                return HttpNotFound();
-
-            var viewModel = new MovieFormViewModel(movie)
-            {
-                MovieGenres = _context.MovieGenres.ToList()
-            };
-
-            return View("MovieForm", viewModel);
         }
 
         //movies
@@ -86,6 +70,7 @@ namespace Vidly.Controllers
             var movieGenres = _context.MovieGenres.ToList();
             var viewModel = new MovieFormViewModel()
             {
+                Movies = new Movies(),
                 MovieGenres = movieGenres
             };
 
@@ -94,35 +79,58 @@ namespace Vidly.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Save(Movies movie)
+        public ActionResult Save(Movies movies)
         {
             if (!ModelState.IsValid)
             {
-                var viewModel = new MovieFormViewModel(movie)
+                var viewModel = new MovieFormViewModel()
                 {
+                    Movies = movies,
                     MovieGenres = _context.MovieGenres.ToList()
                 };
                 return View("MovieForm", viewModel);
             }
 
-            if (movie.Id == 0) //no Id, so new movie
+            if (movies.Id == 0) //no Id, so new movie
             {
-                movie.DateAdded = DateTime.Now;
-                _context.Movies.Add(movie);
+                movies.DateAdded = DateTime.Now;
+                _context.Movies.Add(movies);
             }
             else //Id exists so, update existing movie
             {
-                var movieInDb = _context.Movies.Single(m => m.Id == movie.Id);
+                var movieInDb = _context.Movies.Single(m => m.Id == movies.Id);
 
-                movieInDb.Name = movie.Name;
-                movieInDb.ReleaseDate = movie.ReleaseDate;
-                movieInDb.MovieGenreId = movie.MovieGenreId;
-                movieInDb.Stock = movie.Stock;
+                movieInDb.Name = movies.Name;
+                movieInDb.ReleaseDate = movies.ReleaseDate;
+                movieInDb.MovieGenreId = movies.MovieGenreId;
+                movieInDb.Stock = movies.Stock;
             }
 
             _context.SaveChanges();
 
             return RedirectToAction("Index", "Movies");
         }
+
+        public ActionResult Edit(int id)
+        {
+            var movie = _context.Movies.SingleOrDefault(m => m.Id == id); //get movie by id, or null
+            var viewModel = new MovieFormViewModel();
+
+            if (movie == null) //if null 404
+                return HttpNotFound();
+
+            if (!ModelState.IsValid) //if form doesn't validate
+            {
+                viewModel.Movies = movie;
+                viewModel.MovieGenres = _context.MovieGenres.ToList();
+                return View("MovieForm", viewModel);
+            }
+
+            viewModel.Movies = movie;
+            viewModel.MovieGenres = _context.MovieGenres.ToList();
+
+            return View("MovieForm", viewModel);
+        }
+
     }
 }
