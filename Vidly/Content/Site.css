@@ -27,6 +27,7 @@ footer {
     background-color: #f5f5f5;
 }
 
-.input-validation-error {
+.input-validation-error, .error {
     border-color: #FF4136;
+    color: #FF4136;
 }

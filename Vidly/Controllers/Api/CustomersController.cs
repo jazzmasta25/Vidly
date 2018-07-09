@@ -1,19 +1,16 @@
 ﻿using System;
-using System.Collections.Generic;
+using System.Data.Entity;
 using System.Linq;
-using System.Net;
-using System.Net.Http;
 using System.Web.Http;
 using AutoMapper;
 using Vidly.Dtos;
 using Vidly.Models;
-using System.Data.Entity;
 
 namespace Vidly.Controllers.Api
 {
     public class CustomersController : ApiController
     {
-        private ApplicationDbContext _context;
+        private readonly ApplicationDbContext _context;
 
         public CustomersController()
         {
@@ -36,13 +33,16 @@ namespace Vidly.Controllers.Api
 
         //GET /api/customers/
         [HttpGet]
-        public IHttpActionResult GetCustomers()
+        public IHttpActionResult GetCustomers(string query = null)
         {
-            return Ok(_context
-                .Customers
-                .Include(c => c.MembershipType)
-                .ToList()
-                .Select(Mapper.Map<Customer, CustomerDto>));
+            var customersQuery = _context.Customers.Include(c => c.MembershipType);
+
+            if (!string.IsNullOrWhiteSpace(query))
+                customersQuery = customersQuery.Where(c => c.Name.Contains(query));
+
+            var customerDtos = customersQuery.ToList().Select(Mapper.Map<Customer, CustomerDto>);
+
+            return Ok(customerDtos);
         }
 
         //GET /api/customers/1
@@ -54,23 +54,23 @@ namespace Vidly.Controllers.Api
             if (customer == null)
                 return NotFound();
 
-            return Ok(Mapper.Map<Customer,CustomerDto>(customer));
+            return Ok(Mapper.Map<Customer, CustomerDto>(customer));
         }
 
         //POST /api/customers
         [HttpPost]
         public IHttpActionResult CreateCustomer(CustomerDto customerDto)
         {
-
             var customer = Mapper.Map<CustomerDto, Customer>(customerDto);
             var ageCheck = AgeVerify(customerDto);
 
             if (!ageCheck)
-                return BadRequest("Customer should be at least 18 years old to subscribe to a membership. Or birthdate is required.");
+                return BadRequest(
+                    "Customer should be at least 18 years old to subscribe to a membership. Or birthdate is required.");
 
             if (!ModelState.IsValid)
                 return BadRequest();
-            
+
             _context.Customers.Add(customer);
             _context.SaveChanges();
 
@@ -88,11 +88,11 @@ namespace Vidly.Controllers.Api
             var ageCheck = AgeVerify(customerDto);
 
             if (!ageCheck)
-                return BadRequest("Customer should be at least 18 years old to subscribe to a membership. Or birthdate is required.");
+                return BadRequest(
+                    "Customer should be at least 18 years old to subscribe to a membership. Or birthdate is required.");
 
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
-
 
 
             if (customerInDb == null)
@@ -119,7 +119,5 @@ namespace Vidly.Controllers.Api
 
             return Ok();
         }
-
-
     }
 }
