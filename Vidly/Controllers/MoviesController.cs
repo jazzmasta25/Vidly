@@ -37,6 +37,7 @@ namespace Vidly.Controllers
         }
 
         //movies
+        [AllowAnonymous]
         public ActionResult Index()
         {
             if (User.IsInRole(RoleName.CanManageMovies))
@@ -45,6 +46,7 @@ namespace Vidly.Controllers
         }
 
         //movies/details
+        [AllowAnonymous]
         public ActionResult Details(int id)
         {
 
@@ -91,9 +93,10 @@ namespace Vidly.Controllers
                 return View("MovieForm", viewModel);
             }
 
-            if (movies.Id == 0) //no Id, so new movie
+            if (movies.Id == 0) //no Id, so new movie, insert it
             {
                 movies.DateAdded = DateTime.Now;
+                movies.NumberAvailable = movies.Stock;
                 _context.Movies.Add(movies);
             }
             else //Id exists so, update existing movie

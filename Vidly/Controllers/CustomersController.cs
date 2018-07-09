@@ -75,7 +75,8 @@ namespace Vidly.Controllers
                 var viewModel = new CustomerFormViewModel
                 {
                     Customer = customer,
-                    MembershipTypes = _context.MembershipTypes.ToList()
+                    MembershipTypes = _context.MembershipTypes.ToList(),
+                    Rentals = _context.Rentals.Where(m => m.Customer.Id == customer.Id).ToList()
                 };
                 return View("CustomerForm", viewModel);
             }
@@ -109,11 +110,13 @@ namespace Vidly.Controllers
             {
                 viewModel.Customer = customer;
                 viewModel.MembershipTypes = _context.MembershipTypes.ToList();
+                viewModel.Rentals = _context.Rentals.Include(m => m.Movies).Where(m => m.Customer.Id == customer.Id).ToList();
                 return View("CustomerForm", viewModel);
             }
 
             viewModel.Customer = customer;
             viewModel.MembershipTypes = _context.MembershipTypes.ToList();
+            viewModel.Rentals = _context.Rentals.Include(m => m.Movies).Where(m => m.Customer.Id == customer.Id).ToList();
 
             return View("CustomerForm", viewModel);
 

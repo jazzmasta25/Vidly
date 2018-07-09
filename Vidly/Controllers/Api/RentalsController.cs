@@ -1,4 +1,6 @@
 ﻿using System;
+using System.Data.Entity;
+using System.Data.Entity.Migrations;
 using System.Linq;
 using System.Web.Http;
 using Vidly.Models;
@@ -49,5 +51,25 @@ namespace Vidly.Controllers.Api
             _context.SaveChanges();
             return Ok();
         }
+
+        [HttpDelete]
+        public IHttpActionResult DeleteRental(int id)
+        {
+            var rental = _context.Rentals.Include(c => c.Movies).SingleOrDefault(r => r.Id == id);
+
+            if (rental == null)
+                return NotFound();
+
+            var movie = rental.Movies;
+
+            movie.NumberAvailable++;
+
+            _context.Movies.AddOrUpdate(movie);
+            _context.Rentals.Remove(rental);
+
+            _context.SaveChanges();
+            return Ok();
+        }
+
     }
 }

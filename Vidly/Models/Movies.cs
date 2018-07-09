@@ -19,6 +19,7 @@ namespace Vidly.Models
         [Display(Name = "Number in Stock")]
         public int Stock { get; set; }
 
+        [Display(Name = "Available to Rent")]
         public int NumberAvailable { get; set; }
 
         [Required]

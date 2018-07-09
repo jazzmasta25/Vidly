@@ -18,6 +18,10 @@ textarea {
     max-width: 280px;
 }
 
+h1, h2, h3, h4 {
+    margin-top: 0.5em;
+}
+
 footer {
     position: absolute;
     bottom: 0;
@@ -30,4 +34,8 @@ footer {
 .input-validation-error, .error {
     border-color: #FF4136;
     color: #FF4136;
+}
+
+.removeMovie, .return-button {
+    float: right;
 }

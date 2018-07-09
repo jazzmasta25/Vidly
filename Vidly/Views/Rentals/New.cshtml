@@ -36,10 +36,16 @@
     @Scripts.Render("~/bundles/jqueryval")
     <script>
         $(document).ready(function() {
-
+            
             var vm = {
                 movieIds: []
             };
+
+            $(document).on("click", "#movies .removeMovie", function () {
+                var removeId = $(this).data("movie-id");
+                vm.movieIds.splice($.inArray(removeId, vm.movieIds), 1);
+                $(this).parent().remove();
+            });
 
             var customers = new Bloodhound({
                 datumTokenizer: Bloodhound.tokenizers.obj.whitespace('name'),
@@ -74,17 +80,20 @@
 
             $('#movie').typeahead({
                     minLength: 3,
-                    highlight: true
+                highlight: true
                 },
                 {
                     name: 'movies',
                     display: 'name',
                     source: movies
                 }).on("typeahead:select",
-                function(e, movie) {
-                    $("#movies").append("<li class='list-group-item'>" + movie.name + "</li>");
+                function (e, movie) {
+                    if (vm.movieIds.length > 0 & jQuery.inArray(movie.id, vm.movieIds) !== -1) {
+                        toastr.error("Cannot add movie twice.");
+                        return false;
+                    }
+                    $("#movies").append("<li class='list-group-item'>" + movie.name + "<div data-movie-id='" + movie.id + "' class='ml-1 btn btn-sm btn-danger removeMovie'>X</div></li>");
                     $("#movie").typeahead("val", "");
-
                     vm.movieIds.push(movie.id);
                 });
 
@@ -128,8 +137,7 @@
                     return false;
                 }
             });
-
-
+            
         });
     </script>
 }

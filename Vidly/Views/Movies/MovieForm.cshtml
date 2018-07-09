@@ -36,6 +36,13 @@
         @Html.TextBoxFor(m => m.Movies.Stock, new { @class = "form-control", @Value = (Model.Movies.Id == 0 ? "" : Model.Movies.Stock.ToString()) })
         @Html.ValidationMessageFor(m => m.Movies.Stock, null, new { @class = "text-danger" })
     </div>
+    if (Model.Movies.Id > 0) { 
+         <div class="form-group">
+             @Html.LabelFor(m => m.Movies.NumberAvailable)
+             @Html.TextBoxFor(m => m.Movies.NumberAvailable, new { @class = "form-control", @Value = (Model.Movies.Id == 0 ? "" : Model.Movies.NumberAvailable.ToString()), @readonly = "readonly" })
+             @Html.ValidationMessageFor(m => m.Movies.NumberAvailable, null, new { @class = "text-danger" })
+         </div>
+     }
     @Html.HiddenFor(m => m.Movies.Id)
     @Html.AntiForgeryToken()
     <button type="submit" class="btn btn-primary">@actionLabel Movie</button>

@@ -39,7 +39,39 @@
 
 }
 
+@if (Model.Rentals.Any())
+{
+    <hr />
+    <h3>Current Rentals</h3>
+    <div class="col-md-4">
+        <ul class="list-group">
+            @foreach (var rental in Model.Rentals)
+            {
+                <li class="list-group-item">@rental.Movies.Name <div data-rental-id='@rental.Id' class='ml-1 btn btn-sm btn-secondary return-button'>Return</div></li>
+            }
+        </ul>
+    </div>
+        }
+
 @section scripts
 {
     @Scripts.Render("~/bundles/jqueryval")
+    <script>
+        var buttonPress = $(".return-button").click(function () {
+            var rentalId = $(this).data("rental-id");
+
+            $.ajax({
+                    url: "/api/rentals/" + rentalId,
+                    method: "delete"
+                })
+                .done(function() {
+                    toastr.success("Movie returned.");
+                    $("div[data-rental-id='" + rentalId + "']").parent().remove();
+                })
+                .fail(function() {
+                    toastr.error("Something unexpected happened.");
+                });
+
+        });
+    </script>
 }
