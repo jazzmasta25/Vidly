@@ -47,59 +47,59 @@
                 $(this).parent().remove();
             });
 
-            var customers = new Bloodhound({
-                datumTokenizer: Bloodhound.tokenizers.obj.whitespace('name'),
-                queryTokenizer: Bloodhound.tokenizers.whitespace,
-                remote: {
-                    url: '/api/customers?query=%QUERY',
-                    wildcard: '%QUERY'
-                }
-            });
-
-            var movies = new Bloodhound({
-                datumTokenizer: Bloodhound.tokenizers.obj.whitespace('name'),
-                queryTokenizer: Bloodhound.tokenizers.whitespace,
-                remote: {
-                    url: '/api/movies?query=%QUERY',
-                    wildcard: '%QUERY'
-                }
-            });
-
-            $('#customer').typeahead({
-                    minLength: 3,
-                    highlight: true
+            $( "#movie" ).autocomplete({
+                source: function( request, response ) {
+                    $.ajax( {
+                        url: "/api/movies?query=" + request.term,
+                        dataType: "json",
+                        success: function( json ) {
+                            response($.map(json, function (data, id) {  
+                                return {  
+                                    label: data.name,  
+                                    value: data.id  
+                                };  
+                            })); 
+                        }
+                    } );
                 },
-                {
-                    name: 'customers',
-                    display: 'name',
-                    source: customers
-                }).on("typeahead:select",
-                function(e, customer) {
-                    vm.customerId = customer.id;
-                });
-
-            $('#movie').typeahead({
-                    minLength: 3,
-                highlight: true
-                },
-                {
-                    name: 'movies',
-                    display: 'name',
-                    source: movies
-                }).on("typeahead:select",
-                function (e, movie) {
-                    if (vm.movieIds.length > 0 & jQuery.inArray(movie.id, vm.movieIds) !== -1) {
-                        toastr.error("Cannot add movie twice.");
+                select: function (event, ui) {
+                    if (vm.movieIds.length > 0 & jQuery.inArray(ui.item.value, vm.movieIds) !== -1) {
+                        toastr.error("Cannot add the same movie twice.");
                         return false;
                     }
-                    $("#movies").append("<li class='list-group-item'>" + movie.name + "<div data-movie-id='" + movie.id + "' class='ml-1 btn btn-sm btn-danger removeMovie'>X</div></li>");
-                    $("#movie").typeahead("val", "");
-                    vm.movieIds.push(movie.id);
-                });
-
-            $.validator.setDefaults({
-                ignore: ':hidden, .tt-hint'
+                    //{"item":{"label":"Die Hard","value":1}}
+                    $("#movies").append("<li class='list-group-item'>" + ui.item.label + "<div data-movie-id='" + ui.item.value + "' class='ml-1 btn btn-sm btn-danger removeMovie'>X</div></li>");
+                    $("#movie").val("");
+                    vm.movieIds.push(ui.item.value);
+                    return false;
+                },
+                minLength: 2
             });
+
+            $( "#customer" ).autocomplete({
+                source: function( request, response ) {
+                    $.ajax( {
+                        url: "/api/customers?query=" + request.term,
+                        dataType: "json",
+                        success: function( json ) {
+                            response($.map(json, function (data, id) {  
+                                return {  
+                                    label: data.name,  
+                                    value: data.id  
+                                };  
+                            })); 
+                        }
+                    } );
+                },
+                select: function (event, ui) {
+                    console.log(ui);
+                    vm.customerId = ui.item.value;
+                    $("#customer").val(ui.item.label);
+                    console.log(vm);
+                    return false;
+                },
+                minLength: 2
+            } );
 
             $.validator.addMethod("validCustomer",
                 function() {
@@ -122,8 +122,8 @@
                         })
                         .done(function() {
                             toastr.success("Rentals successfully recorded.");
-                            $("#customer").typeahead("val", "");
-                            $("#movie").typeahead("val", "");
+                            $("#customer").val("");
+                            $("#movie").val("");
                             $("#movies").empty();
 
                             vm = { movieIds: [] };
