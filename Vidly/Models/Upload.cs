@@ -1,7 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
-using System.Linq;
+﻿using System.ComponentModel.DataAnnotations;
 using System.Web;
 
 namespace Vidly.Models
@@ -26,6 +23,7 @@ namespace Vidly.Models
         public int Processed { get; set; }
 
         public string ColumnError { get; set; }
+
 
     }
 }
