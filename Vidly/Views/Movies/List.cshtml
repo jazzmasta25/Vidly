@@ -5,7 +5,8 @@
 }
 
 <h2>Movies</h2>
-@Html.ActionLink("New Movie", "New", "Movies", null, new { @class = "btn btn-primary mb-3" })
+@Html.ActionLink("New Movie", "New", "Movies", null, new { @class = "btn btn-primary mb-3 mr-1" })
+<a class="btn btn-primary mb-3" href="/movies/bulk/">Bulk Upload</a>
 <table id="movies" class="table table-bordered table-hover">
     <thead>
         <tr>

@@ -1,0 +1,35 @@
+﻿@using Microsoft.Ajax.Utilities
+@model Vidly.Models.Upload
+
+@{
+    ViewBag.Title = "title";
+}
+
+<h2>Bulk Upload</h2>
+@using (Html.BeginForm("BulkUpload", "Movies", FormMethod.Post, new { enctype = "multipart/form-data" }))
+{
+<div class="form-group">
+    @Html.LabelFor(m => m.File)
+    @Html.TextBoxFor(m => m.File, new { type = "file", @class = "form-control" })
+    @Html.ValidationMessageFor(m => m.File, null, new { @class = "text-danger" })
+    @Html.ValidationMessageFor(m => m.FileName, null, new { @class = "text-danger" })
+</div>
+
+    @Html.AntiForgeryToken()
+    <button type="submit" class="btn btn-primary">Upload</button>
+
+    if (Model.Processed > 0)
+     {
+         <div class="alert alert-success mt-4">
+             <strong>Success!</strong> @Model.Processed records were processed.
+         </div>
+    }
+
+    if (!string.IsNullOrWhiteSpace(Model.ColumnError))
+    {
+        <div class="alert alert-danger mt-4">
+            <strong>Failed!</strong> @Model.ColumnError column is missing. Please check your file.
+        </div>
+    }
+
+}
