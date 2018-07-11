@@ -152,8 +152,7 @@ namespace Vidly.Controllers
             if (upload.File == null)
                 throw new NullReferenceException("File is null.");
 
-            if (upload.File != null)
-                if (!Directory.Exists(path))
+            if (!Directory.Exists(path))
                     Directory.CreateDirectory(path);
 
             var uploadId = Path.GetFileNameWithoutExtension(Path.GetRandomFileName());
